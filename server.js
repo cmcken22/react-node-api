@@ -14,9 +14,9 @@ app.use(morgan('dev')); // log requests to the console
 // configure body parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
-var port     = process.env.PORT || 8080; // set our port
+var port     = process.env.PORT || 3001; // set our port
 
 var mongoose   = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/mydb'); // connect to our database
@@ -66,6 +66,7 @@ router.route('/users')
 
 	// get all the users (accessed at GET http://localhost:8080/api/users)
 	.get(function(req, res) {
+		console.log('getting usersssss');
 		User.find(function(err, users) {
 			if (err)
 				res.send(err);
@@ -73,6 +74,29 @@ router.route('/users')
 			res.json(users);
 		});
 	});
+
+
+router.route('/login')
+
+	// create a bear (accessed at POST http://localhost:8080/api/users)
+	.post(function(req, res) {
+		console.log('/login', req.body);
+		const user = {
+			username: req.body.username,
+			password: req.body.password
+		}
+		User.findOne(user, function (err, user) {
+			if(user){
+				console.log('user', user);
+				res.json({
+					user: user,
+				});
+			} else {
+				console.log('no user found');
+			}
+		})
+	})
+
 
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);
