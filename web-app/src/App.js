@@ -1,7 +1,7 @@
 import React from 'react';
-// import logo from './logo.svg';
 import './App.css';
 import $ from 'jquery';
+import LoginForm from './components/loginForm';
 
 class App extends React.Component {
   constructor(props) {
@@ -33,80 +33,10 @@ class App extends React.Component {
     return (
       <div>
         <h1>Hello {this.state.activeUser.username}</h1>
-        <InputField
+        <LoginForm
           setActiveUser={this.setActiveUser}
         />
         <ul>{userList}</ul>
-      </div>
-    );
-  }
-}
-
-class InputField extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: '',
-    }
-  }
-
-  handleCreateUser = () => {
-    const user = {
-      username: this.state.username,
-      password: this.state.password
-    }
-    $.post("/api/users", user, function(data, status){
-      console.log("Data: ", data);
-    });
-    this.clearFields();
-  }
-
-  handleLogin = () => {
-    const user = {
-      username: this.state.username,
-      password: this.state.password
-    }
-    const _this = this;
-    $.post("/api/login", user, function(res, status){
-      console.log('res', res);
-      if(res.user){
-        _this.props.setActiveUser(res.user);
-      }
-    });
-    this.clearFields();
-  }
-
-  clearFields = () => {
-    this.setState({
-      username: '',
-      password: ''
-    });
-  }
-
-  onUsernameChange = (evt) => {
-    this.setState({ username: evt.target.value });
-  }
-
-  onPasswordChange = (evt) => {
-    this.setState({ password: evt.target.value });
-  }
-
-  render() {
-    return (
-      <div>
-        <input
-          placeholder='username'
-          value={this.state.username}
-          onChange={this.onUsernameChange}
-        /><br/>
-        <input
-          placeholder='password'
-          value={this.state.password}
-          onChange={this.onPasswordChange}
-        /><br/>
-        <button onClick={this.handleCreateUser}>Create User</button>
-        <button onClick={this.handleLogin}>Login</button>
       </div>
     );
   }

@@ -47,21 +47,29 @@ router.route('/users')
 	// create a bear (accessed at POST http://localhost:8080/api/users)
 	.post(function(req, res) {
 
-		var user = new User();
-		user.username = req.body.username;
-		user.password = req.body.password;
+		var newUser = new User();
+		newUser.username = req.body.username;
+		newUser.password = req.body.password;
 
-		user.save(function(err) {
-			if (err)
-				res.send(err);
-
-			res.json({
-				message: 'User created!',
-				user: user,
-			});
-		});
-
-
+		User.findOne({username: newUser.username}, function (err, user) {
+			console.log('user', user);
+			if(!user){
+				console.log('no user found');
+				newUser.save(function(err) {
+					if (err) res.send(err);
+					res.json({
+						message: 'User created!',
+						user: newUser,
+					});
+				});
+			} else {
+				console.log('User already exists', user);
+				res.json({
+					message: 'username taken',
+					user: user,
+				});
+			}
+		})
 	})
 
 	// get all the users (accessed at GET http://localhost:8080/api/users)
